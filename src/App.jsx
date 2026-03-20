@@ -7,7 +7,7 @@ export default function App() {
   const [activePage, setActivePage] = useState('tasks')
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-black">
       {/* Navigation */}
       <nav className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -28,7 +28,7 @@ export default function App() {
                   Tasks
                 </button>
                 
-                <button
+                {/* <button
                   onClick={() => setActivePage('analytics')}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
                     activePage === 'analytics'
@@ -38,7 +38,7 @@ export default function App() {
                 >
                   <BarChart3 size={20} />
                   Analytics
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

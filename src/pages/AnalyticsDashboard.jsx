@@ -20,7 +20,7 @@ const AnalyticsDashboard = () => {
 
   if (!backendHealthy) {
     return (
-      <div className="p-6 bg-gray-900 min-h-screen">
+      <div className="p-6 bg-black min-h-screen">
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900 border border-red-700 rounded-lg p-6 flex items-start gap-4">
             <AlertCircle className="text-red-400 flex-shrink-0 mt-1" size={24} />
@@ -45,7 +45,7 @@ const AnalyticsDashboard = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-900 min-h-screen">
+    <div className="p-6 bg-black min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
