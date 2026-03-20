@@ -28,7 +28,7 @@ export default function App() {
                   Tasks
                 </button>
                 
-                <button
+                {/* <button
                   onClick={() => setActivePage('analytics')}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
                     activePage === 'analytics'
@@ -38,7 +38,7 @@ export default function App() {
                 >
                   <BarChart3 size={20} />
                   Analytics
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
