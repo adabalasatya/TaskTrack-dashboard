@@ -1,0 +1,402 @@
+[
+  {
+    "id": "task-001",
+    "title": "Design landing page mockup",
+    "description": "Create initial wireframes and high-fidelity mockups for the new landing page",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-01-15T09:00:00Z",
+    "completedAt": "2026-01-18T14:30:00Z",
+    "photos": 5
+  },
+  {
+    "id": "task-002",
+    "title": "Set up CI/CD pipeline",
+    "description": "Configure GitHub Actions for automated testing and deployment",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-01-16T10:00:00Z",
+    "completedAt": "2026-01-19T16:45:00Z",
+    "photos": 3
+  },
+  {
+    "id": "task-003",
+    "title": "Write API documentation",
+    "description": "Document all REST endpoints with examples and response schemas",
+    "status": "completed",
+    "priority": "medium",
+    "createdAt": "2026-01-17T08:30:00Z",
+    "completedAt": "2026-01-20T11:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-004",
+    "title": "Implement user authentication",
+    "description": "Add JWT-based authentication with refresh tokens",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-01-18T09:00:00Z",
+    "completedAt": "2026-01-22T17:30:00Z",
+    "photos": 4
+  },
+  {
+    "id": "task-005",
+    "title": "Create database schema",
+    "description": "Design and implement PostgreSQL schema with proper indexes",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-01-19T10:00:00Z",
+    "completedAt": "2026-01-21T15:00:00Z",
+    "photos": 3
+  },
+  {
+    "id": "task-006",
+    "title": "Set up monitoring dashboard",
+    "description": "Configure Grafana dashboards for system metrics",
+    "status": "completed",
+    "priority": "medium",
+    "createdAt": "2026-01-20T11:00:00Z",
+    "completedAt": "2026-01-22T13:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-007",
+    "title": "Optimize image loading",
+    "description": "Implement lazy loading and WebP format support",
+    "status": "completed",
+    "priority": "low",
+    "createdAt": "2026-01-21T14:00:00Z",
+    "completedAt": "2026-01-23T10:00:00Z",
+    "photos": 1
+  },
+  {
+    "id": "task-008",
+    "title": "Add unit tests for auth module",
+    "description": "Write comprehensive tests for login, logout, and token refresh",
+    "status": "completed",
+    "priority": "medium",
+    "createdAt": "2026-01-22T09:00:00Z",
+    "completedAt": "2026-01-24T16:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-009",
+    "title": "Implement search functionality",
+    "description": "Add full-text search with Elasticsearch",
+    "status": "in-progress",
+    "priority": "high",
+    "createdAt": "2026-01-23T08:00:00Z",
+    "completedAt": null,
+    "photos": 3
+  },
+  {
+    "id": "task-010",
+    "title": "Build notification system",
+    "description": "Implement in-app and email notifications",
+    "status": "in-progress",
+    "priority": "medium",
+    "createdAt": "2026-01-24T09:30:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-011",
+    "title": "Create user dashboard",
+    "description": "Build personalized dashboard with analytics widgets",
+    "status": "in-progress",
+    "priority": "medium",
+    "createdAt": "2026-01-25T10:00:00Z",
+    "completedAt": null,
+    "photos": 4
+  },
+  {
+    "id": "task-012",
+    "title": "Implement file upload feature",
+    "description": "Add drag-and-drop file upload with progress indicator",
+    "status": "in-progress",
+    "priority": "low",
+    "createdAt": "2026-01-26T11:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-013",
+    "title": "Add export to CSV",
+    "description": "Allow users to export their data as CSV files",
+    "status": "pending",
+    "priority": "low",
+    "createdAt": "2026-01-27T09:00:00Z",
+    "completedAt": null,
+    "photos": 1
+  },
+  {
+    "id": "task-014",
+    "title": "Implement dark mode",
+    "description": "Add theme toggle with system preference detection",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-01-28T10:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-015",
+    "title": "Add keyboard shortcuts",
+    "description": "Implement common keyboard shortcuts for power users",
+    "status": "pending",
+    "priority": "low",
+    "createdAt": "2026-01-29T11:00:00Z",
+    "completedAt": null,
+    "photos": 1
+  },
+  {
+    "id": "task-016",
+    "title": "Refactor legacy code",
+    "description": "Clean up and modernize older components",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-01-30T09:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-017",
+    "title": "Set up A/B testing framework",
+    "description": "Configure tools for running experiments",
+    "status": "pending",
+    "priority": "high",
+    "createdAt": "2026-02-01T10:00:00Z",
+    "completedAt": null,
+    "photos": 3
+  },
+  {
+    "id": "task-018",
+    "title": "Implement rate limiting",
+    "description": "Add API rate limiting to prevent abuse",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-02-02T08:00:00Z",
+    "completedAt": "2026-02-04T14:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-019",
+    "title": "Add internationalization support",
+    "description": "Implement i18n for multiple languages",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-03T09:00:00Z",
+    "completedAt": null,
+    "photos": 4
+  },
+  {
+    "id": "task-020",
+    "title": "Create mobile responsive layouts",
+    "description": "Ensure all pages work well on mobile devices",
+    "status": "in-progress",
+    "priority": "high",
+    "createdAt": "2026-02-04T10:00:00Z",
+    "completedAt": null,
+    "photos": 3
+  },
+  {
+    "id": "task-021",
+    "title": "Add WebSocket support",
+    "description": "Implement real-time updates for live collaboration",
+    "status": "pending",
+    "priority": "high",
+    "createdAt": "2026-02-05T11:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-022",
+    "title": "Implement caching layer",
+    "description": "Add Redis caching for frequently accessed data",
+    "status": "completed",
+    "priority": "medium",
+    "createdAt": "2026-02-06T08:00:00Z",
+    "completedAt": "2026-02-08T15:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-023",
+    "title": "Add audit logging",
+    "description": "Track all user actions for compliance",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-02-07T09:00:00Z",
+    "completedAt": "2026-02-09T12:00:00Z",
+    "photos": 3
+  },
+  {
+    "id": "task-024",
+    "title": "Create onboarding flow",
+    "description": "Build guided tour for new users",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-08T10:00:00Z",
+    "completedAt": null,
+    "photos": 5
+  },
+  {
+    "id": "task-025",
+    "title": "Implement data validation",
+    "description": "Add comprehensive input validation on both client and server",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-02-09T08:00:00Z",
+    "completedAt": "2026-02-11T14:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-026",
+    "title": "Add backup system",
+    "description": "Set up automated database backups",
+    "status": "completed",
+    "priority": "high",
+    "createdAt": "2026-02-10T09:00:00Z",
+    "completedAt": "2026-02-12T11:00:00Z",
+    "photos": 2
+  },
+  {
+    "id": "task-027",
+    "title": "Implement error boundaries",
+    "description": "Add React error boundaries for graceful error handling",
+    "status": "completed",
+    "priority": "low",
+    "createdAt": "2026-02-11T10:00:00Z",
+    "completedAt": "2026-02-12T14:00:00Z",
+    "photos": 1
+  },
+  {
+    "id": "task-028",
+    "title": "Add performance monitoring",
+    "description": "Integrate New Relic for performance tracking",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-12T11:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-029",
+    "title": "Create admin panel",
+    "description": "Build administrative interface for managing users",
+    "status": "pending",
+    "priority": "high",
+    "createdAt": "2026-02-13T09:00:00Z",
+    "completedAt": null,
+    "photos": 4
+  },
+  {
+    "id": "task-030",
+    "title": "Implement SSO integration",
+    "description": "Add Single Sign-On with OAuth providers",
+    "status": "pending",
+    "priority": "high",
+    "createdAt": "2026-02-14T10:00:00Z",
+    "completedAt": null,
+    "photos": 3
+  },
+  {
+    "id": "task-031",
+    "title": "Add accessibility features",
+    "description": "Ensure WCAG 2.1 compliance",
+    "status": "in-progress",
+    "priority": "medium",
+    "createdAt": "2026-02-15T08:00:00Z",
+    "completedAt": null,
+    "photos": 3
+  },
+  {
+    "id": "task-032",
+    "title": "Implement two-factor authentication",
+    "description": "Add 2FA via authenticator app",
+    "status": "pending",
+    "priority": "high",
+    "createdAt": "2026-02-16T09:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-033",
+    "title": "Create API rate limit dashboard",
+    "description": "Show users their API usage statistics",
+    "status": "pending",
+    "priority": "low",
+    "createdAt": "2026-02-17T10:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-034",
+    "title": "Add Webhook support",
+    "description": "Allow users to configure webhooks for events",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-18T11:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-035",
+    "title": "Implement data pagination",
+    "description": "Add cursor-based pagination for large datasets",
+    "status": "completed",
+    "priority": "medium",
+    "createdAt": "2026-02-19T08:00:00Z",
+    "completedAt": "2026-02-20T15:00:00Z",
+    "photos": 1
+  },
+  {
+    "id": "task-036",
+    "title": "Add bulk operations",
+    "description": "Allow users to perform bulk create/update/delete",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-20T09:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-037",
+    "title": "Implement activity feed",
+    "description": "Show recent user activity and notifications",
+    "status": "in-progress",
+    "priority": "low",
+    "createdAt": "2026-02-21T10:00:00Z",
+    "completedAt": null,
+    "photos": 3
+  },
+  {
+    "id": "task-038",
+    "title": "Add custom fields",
+    "description": "Allow users to add custom fields to entities",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-22T11:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  },
+  {
+    "id": "task-039",
+    "title": "Implement integrations page",
+    "description": "Create marketplace for third-party integrations",
+    "status": "pending",
+    "priority": "low",
+    "createdAt": "2026-02-23T09:00:00Z",
+    "completedAt": null,
+    "photos": 4
+  },
+  {
+    "id": "task-040",
+    "title": "Add data import feature",
+    "description": "Allow CSV and Excel file imports",
+    "status": "pending",
+    "priority": "medium",
+    "createdAt": "2026-02-24T10:00:00Z",
+    "completedAt": null,
+    "photos": 2
+  }
+]
