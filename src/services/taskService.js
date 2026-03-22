@@ -80,16 +80,21 @@ export const taskService = {
     }
   },
 
-  // Filter tasks by status
+  // Filter tasks by status (maps 'completed'/'pending' to boolean `completed`)
   filterByStatus: (tasks, status) => {
     if (!status) return tasks
-    return tasks.filter(task => task.status === status)
+    const searchStatus = status.toLowerCase()
+    return tasks.filter(task => {
+      const taskStatusStr = task.completed ? 'completed' : 'pending'
+      return taskStatusStr === searchStatus
+    })
   },
 
   // Filter tasks by priority
   filterByPriority: (tasks, priority) => {
     if (!priority) return tasks
-    return tasks.filter(task => task.priority === priority)
+    const searchPriority = priority.toLowerCase()
+    return tasks.filter(task => task.priority?.toLowerCase() === searchPriority)
   },
 
   // Search tasks by title or description
@@ -118,8 +123,12 @@ export const taskService = {
           new Date(a.createdAt) - new Date(b.createdAt)
         )
         break
-      case 'status':
-        sorted.sort((a, b) => a.status.localeCompare(b.status))
+      case 'completed':
+        sorted.sort((a, b) => {
+          const aStat = a.completed ? 1 : 0
+          const bStat = b.completed ? 1 : 0
+          return aStat - bStat
+        })
         break
       case 'priority':
         const priorityOrder = { high: 0, medium: 1, low: 2 }

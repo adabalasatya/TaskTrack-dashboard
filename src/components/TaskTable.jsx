@@ -1,220 +1,211 @@
 import { useState, useMemo } from 'react'
-import { Search, ChevronUp, ChevronDown, Download } from 'lucide-react'
+import { Search, ChevronUp, ChevronDown, Download, ChevronLeft, ChevronRight, Filter } from 'lucide-react'
 import { formatDate, getStatusColor, getPriorityColor } from '../utils/dataProcessing'
 import { taskService } from '../services/taskService'
 import { exportToCSV } from '../utils/exportUtils'
-import { trackSearch, trackFilter, trackSort, trackExport, trackPagination } from '../services/analytics'
 
-const ITEMS_PER_PAGE = 10
+// Default items per page
+const DEFAULT_ITEMS_PER_PAGE = 10
+
+/* ─── Badge helpers ─── */
+const STATUS_STYLES = {
+  completed:    { bg: 'rgba(16,185,129,0.1)',  color: '#34d399', border: 'rgba(16,185,129,0.2)'  },
+  pending:      { bg: 'rgba(245,158,11,0.1)',  color: '#fbbf24', border: 'rgba(245,158,11,0.2)'  },
+}
+const PRIORITY_STYLES = {
+  high:   { bg: 'rgba(239,68,68,0.1)',   color: '#f87171', border: 'rgba(239,68,68,0.2)'   },
+  medium: { bg: 'rgba(245,158,11,0.1)',  color: '#fbbf24', border: 'rgba(245,158,11,0.2)'  },
+  low:    { bg: 'rgba(107,114,128,0.1)', color: '#9ca3af', border: 'rgba(107,114,128,0.2)' },
+}
+
+const Badge = ({ text, styles }) => (
+  <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium"
+    style={{ background: styles.bg, color: styles.color, border: `1px solid ${styles.border}` }}>
+    {text}
+  </span>
+)
+
+const GLASS = {
+  background: 'rgba(255,255,255,0.04)',
+  border: '1px solid rgba(255,255,255,0.08)',
+  borderRadius: '10px',
+  color: '#d1d5db',
+}
 
 export const TaskTable = ({ tasks }) => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [priorityFilter, setPriorityFilter] = useState('')
-  const [sortBy, setSortBy] = useState('createdAt')
-  const [sortOrder, setSortOrder] = useState('desc')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [searchTerm,    setSearchTerm]    = useState('')
+  const [statusFilter,  setStatusFilter]  = useState('')
+  const [priorityFilter,setPriorityFilter]= useState('')
+  const [sortBy,        setSortBy]        = useState('createdAt')
+  const [sortOrder,     setSortOrder]     = useState('desc')
+  const [currentPage,   setCurrentPage]   = useState(1)
+  const [itemsPerPage,  setItemsPerPage]  = useState(DEFAULT_ITEMS_PER_PAGE)
 
-  // Apply filters and search
-  const filteredTasks = useMemo(() => {
-    let result = tasks
-    
-    if (searchTerm) {
-      result = taskService.searchTasks(result, searchTerm)
-    }
-    
-    if (statusFilter) {
-      result = taskService.filterByStatus(result, statusFilter)
-    }
-    
-    if (priorityFilter) {
-      result = taskService.filterByPriority(result, priorityFilter)
-    }
-    
-    return result
+  const filtered = useMemo(() => {
+    let r = tasks
+    if (searchTerm)    r = taskService.searchTasks(r, searchTerm)
+    if (statusFilter)  r = taskService.filterByStatus(r, statusFilter)
+    if (priorityFilter)r = taskService.filterByPriority(r, priorityFilter)
+    return r
   }, [tasks, searchTerm, statusFilter, priorityFilter])
 
-  // Apply sorting
-  const sortedTasks = useMemo(() => {
-    return taskService.sortTasks(filteredTasks, sortBy, sortOrder)
-  }, [filteredTasks, sortBy, sortOrder])
-
-  // Paginate
-  const paginatedTasks = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
-    return sortedTasks.slice(startIndex, startIndex + ITEMS_PER_PAGE)
-  }, [sortedTasks, currentPage])
-
-  const totalPages = Math.ceil(sortedTasks.length / ITEMS_PER_PAGE)
+  const sorted    = useMemo(() => taskService.sortTasks(filtered, sortBy, sortOrder), [filtered, sortBy, sortOrder])
+  const paginated = useMemo(() => sorted.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage), [sorted, currentPage, itemsPerPage])
+  const totalPages = Math.ceil(sorted.length / itemsPerPage)
 
   const handleSort = (field) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortBy(field)
-      setSortOrder('asc')
-    }
+    setSortBy(field)
+    setSortOrder(sortBy === field && sortOrder === 'asc' ? 'desc' : 'asc')
     setCurrentPage(1)
-    trackSort(field, sortOrder === 'asc' ? 'desc' : 'asc')
   }
 
-  const SortIcon = ({ field }) => {
-    if (sortBy !== field) return <div className="w-4 h-4" />
-    return sortOrder === 'asc' 
-      ? <ChevronUp className="w-4 h-4" />
-      : <ChevronDown className="w-4 h-4" />
-  }
+  const SortIcon = ({ field }) =>
+    sortBy !== field
+      ? <ChevronUp className="w-3 h-3 opacity-20" />
+      : sortOrder === 'asc'
+        ? <ChevronUp className="w-3 h-3 text-indigo-400" />
+        : <ChevronDown className="w-3 h-3 text-indigo-400" />
+
+  const cols = [
+    { label: 'Task',      field: 'title'     },
+    { label: 'Status',    field: 'completed' },
+    { label: 'Priority',  field: 'priority'  },
+    { label: 'Created',   field: 'createdAt' },
+    { label: 'Location',  field: null        },
+    { label: 'Photos',    field: null        },
+  ]
 
   return (
-    <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden">
-      {/* Header with controls */}
-      <div className="p-6 border-b border-gray-700">
+    <div className="rounded-2xl overflow-hidden"
+      style={{ background: 'rgba(15,17,26,0.9)', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 8px 40px rgba(0,0,0,0.4)' }}>
+
+      {/* ── Controls ── */}
+      <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-white">Tasks</h3>
+          <div className="flex items-center gap-2.5">
+            <Filter size={14} className="text-indigo-400" />
+            <span className="text-white text-sm font-semibold">Tasks</span>
+            <span className="px-2 py-0.5 rounded-full text-xs font-medium"
+              style={{ background: 'rgba(99,102,241,0.12)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.2)' }}>
+              {filtered.length}
+            </span>
+          </div>
           <button
-            onClick={() => {
-              exportToCSV(sortedTasks, 'tasks.csv')
-              trackExport(sortedTasks.length)
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors cursor-pointer text-sm font-medium"
-          >
-            <Download className="w-4 h-4" />
-            Export CSV
+            onClick={() => exportToCSV(sorted, 'tasks.csv')}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+            style={{ background: 'linear-gradient(135deg,#6366f1,#a855f7)', boxShadow: '0 2px 14px rgba(99,102,241,0.25)' }}>
+            <Download size={13} />
+            Export
           </button>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search tasks..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value)
-                setCurrentPage(1)
-                trackSearch(e.target.value, 0)
-              }}
-              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors"
-            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-600" />
+            <input type="text" placeholder="Search tasks…" value={searchTerm}
+              onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1) }}
+              className="w-full pl-8 pr-3 py-2 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500/40 transition"
+              style={GLASS} />
           </div>
 
-          {/* Status Filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value)
-              setCurrentPage(1)
-              trackFilter('status', e.target.value, 0)
-            }}
-            className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
-          >
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
+          {/* Status */}
+          <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setCurrentPage(1) }}
+            className="px-3 py-2 text-sm cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500/40 transition"
+            style={GLASS}>
+            <option value="" style={{ background: '#0f1117' }}>All Statuses</option>
+            <option value="pending"     style={{ background: '#0f1117' }}>Pending</option>
+            <option value="completed"   style={{ background: '#0f1117' }}>Completed</option>
           </select>
 
-          {/* Priority Filter */}
-          <select
-            value={priorityFilter}
-            onChange={(e) => {
-              setPriorityFilter(e.target.value)
-              setCurrentPage(1)
-              trackFilter('priority', e.target.value, 0)
-            }}
-            className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-blue-500 transition-colors cursor-pointer"
-          >
-            <option value="">All Priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+          {/* Priority */}
+          <select value={priorityFilter} onChange={e => { setPriorityFilter(e.target.value); setCurrentPage(1) }}
+            className="px-3 py-2 text-sm cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500/40 transition"
+            style={GLASS}>
+            <option value="" style={{ background: '#0f1117' }}>All Priorities</option>
+            <option value="low"    style={{ background: '#0f1117' }}>Low</option>
+            <option value="medium" style={{ background: '#0f1117' }}>Medium</option>
+            <option value="high"   style={{ background: '#0f1117' }}>High</option>
           </select>
 
-          {/* Results count */}
-          <div className="flex items-center justify-end text-gray-400 text-sm">
-            {filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}
+          {/* Items Per Page */}
+          <div className="flex items-center gap-2">
+            <span className="text-gray-600 text-xs font-medium whitespace-nowrap">Show:</span>
+            <select 
+              value={itemsPerPage} 
+              onChange={e => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1) }}
+              className="px-3 py-2 text-sm cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500/40 transition w-full"
+              style={GLASS}>
+              <option value="10" style={{ background: '#0f1117' }}>10 records</option>
+              <option value="20" style={{ background: '#0f1117' }}>20 records</option>
+              <option value="50" style={{ background: '#0f1117' }}>50 records</option>
+              <option value="100" style={{ background: '#0f1117' }}>100 records</option>
+            </select>
           </div>
         </div>
       </div>
 
-      {/* Table */}
+      {/* ── Table ── */}
       <div className="overflow-x-auto">
-        {paginatedTasks.length > 0 ? (
+        {paginated.length > 0 ? (
           <table className="w-full">
-            <thead className="bg-gray-700 border-b border-gray-600">
+            <thead style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
               <tr>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('title')}
-                    className="flex items-center gap-2 hover:text-blue-400 transition-colors"
-                  >
-                    <span className="text-sm font-semibold text-white">Title</span>
-                    <SortIcon field="title" />
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('status')}
-                    className="flex items-center gap-2 hover:text-blue-400 transition-colors"
-                  >
-                    <span className="text-sm font-semibold text-white">Status</span>
-                    <SortIcon field="status" />
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('priority')}
-                    className="flex items-center gap-2 hover:text-blue-400 transition-colors"
-                  >
-                    <span className="text-sm font-semibold text-white">Priority</span>
-                    <SortIcon field="priority" />
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left">
-                  <button
-                    onClick={() => handleSort('createdAt')}
-                    className="flex items-center gap-2 hover:text-blue-400 transition-colors"
-                  >
-                    <span className="text-sm font-semibold text-white">Created</span>
-                    <SortIcon field="createdAt" />
-                  </button>
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-white">Completed</th>
-                <th className="px-6 py-3 text-center text-sm font-semibold text-white">Photos</th>
+                {cols.map(({ label, field }) => (
+                  <th key={label} className="px-5 py-3 text-left">
+                    {field ? (
+                      <button onClick={() => handleSort(field)}
+                        className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-gray-600 hover:text-gray-400 transition-colors">
+                        {label}<SortIcon field={field} />
+                      </button>
+                    ) : (
+                      <span className="text-xs font-semibold uppercase tracking-wider text-gray-600">{label}</span>
+                    )}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {paginatedTasks.map((task, index) => (
-                <tr
-                  key={task.id}
-                  className={`border-b border-gray-700 hover:bg-gray-700 transition-colors ${
-                    index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-750'
-                  }`}
-                >
-                  <td className="px-6 py-4">
-                    <div>
-                      <p className="text-white font-medium truncate">{task.title}</p>
-                      <p className="text-gray-400 text-sm truncate">{task.description}</p>
-                    </div>
+              {paginated.map((task, i) => (
+                <tr key={task.id}
+                  className="transition-all duration-150 group cursor-default"
+                  style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(99,102,241,0.05)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>
+
+                  <td className="px-5 py-3.5">
+                    <p className="text-gray-200 text-sm font-medium truncate max-w-[220px]">{task.title}</p>
+                    {task.description && (
+                      <p className="text-gray-600 text-xs truncate max-w-[220px] mt-0.5">{task.description}</p>
+                    )}
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(task.status)}`}>
-                      {task.status === 'in-progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                    </span>
+
+                  <td className="px-5 py-3.5">
+                    {task.completed ? (
+                      <Badge text="Completed" styles={STATUS_STYLES.completed} />
+                    ) : (
+                      <Badge text="Pending" styles={STATUS_STYLES.pending} />
+                    )}
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getPriorityColor(task.priority)}`}>
-                      {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                    </span>
+
+                  <td className="px-5 py-3.5">
+                    <Badge text={task.priority?.charAt(0).toUpperCase() + task.priority?.slice(1) || 'None'}
+                           styles={PRIORITY_STYLES[task.priority?.toLowerCase()] || PRIORITY_STYLES.low} />
                   </td>
-                  <td className="px-6 py-4 text-gray-300 text-sm">{formatDate(task.createdAt)}</td>
-                  <td className="px-6 py-4 text-gray-300 text-sm">
-                    {task.completedAt ? formatDate(task.completedAt) : '-'}
+
+                  <td className="px-5 py-3.5 text-gray-500 text-xs">{formatDate(task.createdAt)}</td>
+
+                  <td className="px-5 py-3.5 text-gray-500 text-xs">
+                    {task.location?.address ? (
+                      <span className="truncate max-w-[150px] inline-block" title={task.location.address}>
+                        {task.location.address.split(',')[0]}
+                      </span>
+                    ) : <span className="text-gray-700">—</span>}
                   </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-block px-3 py-1 bg-blue-900 text-blue-100 rounded-full text-xs font-semibold">
+
+                  <td className="px-5 py-3.5">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-xs font-semibold"
+                      style={{ background: 'rgba(168,85,247,0.1)', color: '#c084fc', border: '1px solid rgba(168,85,247,0.18)' }}>
                       {typeof task.photos === 'number' ? task.photos : task.photos?.length || 0}
                     </span>
                   </td>
@@ -223,38 +214,36 @@ export const TaskTable = ({ tasks }) => {
             </tbody>
           </table>
         ) : (
-          <div className="p-6 text-center text-gray-400">
-            <p>No tasks found</p>
+          <div className="py-16 text-center">
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <Search className="w-5 h-5 text-gray-700" />
+            </div>
+            <p className="text-gray-500 text-sm font-medium">No tasks found</p>
+            <p className="text-gray-700 text-xs mt-1">Try adjusting your search or filters</p>
           </div>
         )}
       </div>
 
-      {/* Pagination */}
+      {/* ── Pagination ── */}
       {totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-gray-700 flex items-center justify-between bg-gray-750">
-          <div className="text-sm text-gray-400">
-            Page {currentPage} of {totalPages}
-          </div>
-          <div className="flex gap-2">
+        <div className="px-6 py-3.5 flex items-center justify-between"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
+          <span className="text-gray-600 text-xs">Page <span className="text-gray-400">{currentPage}</span> / {totalPages}</span>
+          <div className="flex gap-1.5">
             <button
-              onClick={() => {
-                setCurrentPage(Math.max(1, currentPage - 1))
-                trackPagination(Math.max(1, currentPage - 1), ITEMS_PER_PAGE)
-              }}
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
-            >
-              Previous
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5"
+              style={{ color: '#9ca3af' }}>
+              <ChevronLeft size={13} /> Prev
             </button>
             <button
-              onClick={() => {
-                setCurrentPage(Math.min(totalPages, currentPage + 1))
-                trackPagination(Math.min(totalPages, currentPage + 1), ITEMS_PER_PAGE)
-              }}
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed"
-            >
-              Next
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5"
+              style={{ color: '#9ca3af' }}>
+              Next <ChevronRight size={13} />
             </button>
           </div>
         </div>

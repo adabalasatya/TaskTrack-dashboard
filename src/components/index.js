@@ -1,2 +1,3 @@
-export { StatCards } from './StatCards'
-export { TaskTable } from './TaskTable'
+export * from './StatCards'
+export * from './TaskTable'
+export * from './FileUpload'

@@ -8,14 +8,14 @@ export const calculateTotalTasks = (tasks) => {
 // Calculate completion percentage
 export const calculateCompletionPercentage = (tasks) => {
   if (tasks.length === 0) return 0
-  const completed = tasks.filter(task => task.status === 'completed').length
-  return Math.round((completed / tasks.length) * 100)
+  const completedCount = tasks.filter(task => task.completed === true).length
+  return Math.round((completedCount / tasks.length) * 100)
 }
 
 // Calculate average completion time in days
 export const calculateAverageCompletionTime = (tasks) => {
   const completedTasks = tasks.filter(
-    task => task.status === 'completed' && task.completedAt
+    task => task.completed === true && task.completedAt
   )
   
   if (completedTasks.length === 0) return 0
@@ -39,21 +39,18 @@ export const calculateTotalPhotoCount = (tasks) => {
 
 // Get status distribution for pie chart
 export const getStatusDistribution = (tasks) => {
-  const distribution = {
-    pending: 0,
-    'in-progress': 0,
-    completed: 0
-  }
+  const distribution = { pending: 0, completed: 0 }
   
   tasks.forEach(task => {
-    if (distribution.hasOwnProperty(task.status)) {
-      distribution[task.status]++
+    if (task.completed === true) {
+      distribution.completed++
+    } else {
+      distribution.pending++
     }
   })
   
   return [
     { name: 'Pending', value: distribution.pending, color: '#ef4444' },
-    { name: 'In Progress', value: distribution['in-progress'], color: '#f59e0b' },
     { name: 'Completed', value: distribution.completed, color: '#10b981' }
   ]
 }
@@ -73,9 +70,9 @@ export const getPriorityDistribution = (tasks) => {
   })
   
   return [
-    { priority: 'Low', count: distribution.low, fill: '#64748b' },
-    { priority: 'Medium', count: distribution.medium, fill: '#f59e0b' },
-    { priority: 'High', count: distribution.high, fill: '#ef4444' }
+    { name: 'Low', value: distribution.low, fill: '#64748b' },
+    { name: 'Medium', value: distribution.medium, fill: '#f59e0b' },
+    { name: 'High', value: distribution.high, fill: '#ef4444' }
   ]
 }
 
@@ -83,18 +80,18 @@ export const getPriorityDistribution = (tasks) => {
 export const getTasksOverTime = (tasks) => {
   const dateMap = new Map()
   
-  // Process all tasks
   tasks.forEach(task => {
     const created = dayjs(task.createdAt).format('YYYY-MM-DD')
     const current = dateMap.get(created) || { date: created, created: 0, completed: 0 }
     current.created++
     dateMap.set(created, current)
     
-    if (task.status === 'completed' && task.completedAt) {
-      const completed = dayjs(task.completedAt).format('YYYY-MM-DD')
-      const completedEntry = dateMap.get(completed) || { date: completed, created: 0, completed: 0 }
+    // If completed but missing completedAt, we'll map its completion to its creation date for the chart
+    if (task.completed === true) {
+      const completedDate = task.completedAt ? dayjs(task.completedAt).format('YYYY-MM-DD') : created
+      const completedEntry = dateMap.get(completedDate) || { date: completedDate, created: 0, completed: 0 }
       completedEntry.completed++
-      dateMap.set(completed, completedEntry)
+      dateMap.set(completedDate, completedEntry)
     }
   })
   
